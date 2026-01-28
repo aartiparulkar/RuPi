@@ -1,6 +1,6 @@
-from models.taxModels import UserProfile, IncomeDetails, DeductionDetails, TaxComputationInput
-from validation.validator import validate_input, ValidationError
-from computation.computeTax import compute_tax
+from src.models.taxModels import UserProfile, IncomeDetails, DeductionDetails, TaxComputationInput
+from src.validation.validator import validate_input, ValidationError
+from src.computation.computeTax import compute_tax
 
 def get_float(prompt: str) -> float:
     while True:

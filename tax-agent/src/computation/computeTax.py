@@ -2,10 +2,12 @@ from typing import List
 from src.models.taxModels import TaxComputationInput, TaxComputationResult, SlabTax
 from src.rules import fy2024_25
 
+
 def apply_standard_deduction(gross_salary: float, applicable: bool) -> float:
     if applicable:
         return max(0.0, gross_salary - fy2024_25.STANDARD_DEDUCTION)
     return gross_salary
+
 
 def calculate_taxable_income(data: TaxComputationInput, regime: str) -> float:
     income_after_std_deduction = apply_standard_deduction(
@@ -18,6 +20,7 @@ def calculate_taxable_income(data: TaxComputationInput, regime: str) -> float:
         income_after_std_deduction -= data.deduction_details.sec_80d
         
     return max(0.0, income_after_std_deduction)  # Taxable income cannot be negative
+
 
 def calculate_slab_wise_tax(taxable_income: float, slabs: List[tuple]) -> List[SlabTax]:
     slab_taxes = []
@@ -35,12 +38,15 @@ def calculate_slab_wise_tax(taxable_income: float, slabs: List[tuple]) -> List[S
     
     return slab_taxes
 
+
 def calculate_total_tax(slab_taxes: List[SlabTax]) -> float:
     total = sum(slab.tax_amount for slab in slab_taxes)
     return round(total, 2)
 
+
 def calculate_cess(tax: float) -> float:
     return round(tax * fy2024_25.CESS_RATE, 2)
+
 
 def compute_tax(data: TaxComputationInput, regime: str) -> TaxComputationResult:
     """

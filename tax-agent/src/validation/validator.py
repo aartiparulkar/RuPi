@@ -1,5 +1,5 @@
-from models.taxModels import TaxComputationInput
-from rules import fy2024_25
+from src.models.taxModels import TaxComputationInput
+from src.rules import fy2024_25
 
 class ValidationError(Exception):
     pass
@@ -24,20 +24,16 @@ def validate_input(data: TaxComputationInput) -> None:
     # Validate deductions - 80C
     if data.deduction_details.sec_80c < 0:
         raise ValidationError("Section 80C deduction cannot be negative.")
+    
     if data.deduction_details.sec_80c > fy2024_25.DEDUCTION_LIMITS["sec_80c"]:
         raise ValidationError(f"Section 80C deduction exceeds limit of ₹{fy2024_25.DEDUCTION_LIMITS['sec_80c']}.")
 
     # Validate deductions - 80D
     if data.deduction_details.sec_80d < 0:
         raise ValidationError("Section 80D deduction cannot be negative.")
+    
     if data.deduction_details.sec_80d > fy2024_25.DEDUCTION_LIMITS["sec_80d"]:
         raise ValidationError(f"Section 80D deduction exceeds limit of ₹{fy2024_25.DEDUCTION_LIMITS['sec_80d']}.")
-
-    if data.deduction_details.sec_80c > 150000:
-        raise ValidationError("80C exceeds ₹1,50,000 limit")
-
-    if data.deduction_details.sec_80d > 25000:
-        raise ValidationError("80D exceeds ₹25,000 limit")
 
     # Validate standard deduction applicable flag
     if not isinstance(data.deduction_details.standard_deduction_applicable, bool):

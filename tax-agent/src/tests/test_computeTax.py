@@ -1,9 +1,9 @@
 import pytest
-from models.taxModels import (
+from src.models.taxModels import (
     UserProfile, IncomeDetails, DeductionDetails, TaxComputationInput
 )
-from computation.computeTax import compute_tax
-from validation.validator import validate_input, ValidationError
+from src.computation.computeTax import compute_tax
+from src.validation.validator import validate_input, ValidationError
 
 def build_input(
     gross_salary, sec_80c=0, sec_80d=0, std_deduction=True,
