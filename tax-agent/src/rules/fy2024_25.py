@@ -20,7 +20,7 @@ NEW_REGIME_SLABS: List[Tuple[float, float]] = [
 ]
 
 # Deduction limits
-DEDuction_LIMITS = {
+DEDUCTION_LIMITS = {
     "sec_80c": 150000,    # ₹1.5L
     "sec_80d": 25000,     # ₹25,000 (simplified, ignoring senior citizens for MVP)
 }

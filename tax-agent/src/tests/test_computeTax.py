@@ -30,7 +30,7 @@ def test_validate_input_valid():
     data = build_input(700000, 100000, 20000)
     # Should not raise exception
     validate_input(data)
-
+    
 def test_validate_input_invalid_80c():
     data = build_input(700000, 200000, 20000)  # 80C above limit
     with pytest.raises(ValidationError):
@@ -56,11 +56,19 @@ def test_new_regime_tax_basic():
     assert abs(result.total_tax - (slab_sum + cess)) < 0.01
 
 def test_zero_tax_income():
-    data = build_input(200000, 0, 0)
+    data = build_input(300000, 0, 0)
     validate_input(data)
     result = compute_tax(data, "old")
+    assert result.taxable_income == 250000
     assert result.total_tax == 0
 
+def test_boundary_slab():
+    data = build_input(500000, 0, 0)
+    validate_input(data)
+    result = compute_tax(data, "old")
+    assert result.taxable_income == 450000
+    assert result.total_tax == 10400  # 5% on 250000 + 20% on 50000 + 4% cess
+    
 def test_max_deductions():
     data = build_input(1500000, 150000, 25000)
     validate_input(data)

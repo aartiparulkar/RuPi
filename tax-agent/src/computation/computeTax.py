@@ -7,16 +7,17 @@ def apply_standard_deduction(gross_salary: float, applicable: bool) -> float:
         return max(0.0, gross_salary - fy2024_25.STANDARD_DEDUCTION)
     return gross_salary
 
-def calculate_taxable_income(data: TaxComputationInput) -> float:
+def calculate_taxable_income(data: TaxComputationInput, regime: str) -> float:
     income_after_std_deduction = apply_standard_deduction(
         data.income_details.gross_salary,
         data.deduction_details.standard_deduction_applicable
     )
     
-    total_deductions = data.deduction_details.sec_80c + data.deduction_details.sec_80d
-    
-    taxable_income = income_after_std_deduction - total_deductions
-    return max(0.0, taxable_income)  # Taxable income cannot be negative
+    if regime == 'old':
+        income_after_std_deduction -= data.deduction_details.sec_80c
+        income_after_std_deduction -= data.deduction_details.sec_80d
+        
+    return max(0.0, income_after_std_deduction)  # Taxable income cannot be negative
 
 def calculate_slab_wise_tax(taxable_income: float, slabs: List[tuple]) -> List[SlabTax]:
     slab_taxes = []
@@ -52,7 +53,7 @@ def compute_tax(data: TaxComputationInput, regime: str) -> TaxComputationResult:
     else:
         raise ValueError("Invalid regime specified. Choose 'old' or 'new'.")
 
-    taxable_income = calculate_taxable_income(data)
+    taxable_income = calculate_taxable_income(data, regime)
     slab_wise_tax = calculate_slab_wise_tax(taxable_income, slabs)
     total_tax = calculate_total_tax(slab_wise_tax)
     cess = calculate_cess(total_tax)
